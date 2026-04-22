@@ -1,0 +1,167 @@
+{
+	"info": {
+		"_postman_id": "4b0da2ae-3338-4b67-b35f-eb229e879e3e",
+		"name": "RPG Learning Engine v2",
+		"description": "Collection for testing the Gamified Learning Platform Backend.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:5000/health"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth & User",
+			"item": [
+				{
+					"name": "Onboard Hero",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"clerkId\": \"test_hero_123\",\n    \"username\": \"RecursionMaster\",\n    \"email\": \"hero@rpg.com\",\n    \"selectedClass\": \"Recursion Mage\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/api/user/onboard"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile (Auth)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{CLERK_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:5000/api/user/profile"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Game Logic",
+			"item": [
+				{
+					"name": "Get Adaptive Challenge (Auth)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{CLERK_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:5000/api/game/challenge/Arrays"
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Answer (Auth)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{CLERK_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"questionId\": \"65f...\",\n    \"isCorrect\": true,\n    \"timeTaken\": 5000,\n    \"topic\": \"Arrays\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/api/game/submit"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shop",
+			"item": [
+				{
+					"name": "Get Shop Items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:5000/api/shop/items"
+					},
+					"response": []
+				},
+				{
+					"name": "Buy Item (Auth)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{CLERK_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"itemType\": \"Topic Revealer\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/api/shop/buy"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "CLERK_TOKEN",
+			"value": "your_token_here"
+		}
+	]
+}
+9

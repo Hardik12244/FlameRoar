@@ -1,14 +1,14 @@
-export default class Player extends Phaser.Physics.Matter.Sprite{
-    constructor(data){
-        let{scene, x,y,texture, frame, isStatic}=data;
-        super(scene.matter.world,x,y,texture,frame);
+export default class Player extends Phaser.Physics.Matter.Sprite {
+    constructor(data) {
+        let { scene, x, y, texture, frame, isStatic } = data;
+        super(scene.matter.world, x, y, texture, frame);
         this.scene.add.existing(this);
 
-        const {Body,Bodies} = Phaser.Physics.Matter.Matter;
-        var playerCollider =Bodies.circle(this.x,this.y,6,{isSensor:false,label:'playerCollider'});
-        var playerSensor = Bodies.circle(this.x,this.y,30,{isSensor:true,label:'playerSensor'});
+        const { Body, Bodies } = Phaser.Physics.Matter.Matter;
+        var playerCollider = Bodies.circle(this.x, this.y, 6, { isSensor: false, label: 'playerCollider' });
+        var playerSensor = Bodies.circle(this.x, this.y, 30, { isSensor: true, label: 'playerSensor' });
         const compoundBody = Body.create({
-            parts:[playerCollider,playerSensor],
+            parts: [playerCollider, playerSensor],
             frictionAir: 0.12,
             isStatic: isStatic || false
         });
@@ -50,18 +50,18 @@ export default class Player extends Phaser.Physics.Matter.Sprite{
         }
     }
 
-    static preload(scene){
+    static preload(scene) {
         scene.load.atlas('you', '/assets/you.png', '/assets/you_atlas.json');
         scene.load.animation('you_anim', '/assets/you_anim.json');
         scene.load.atlas('pappa_heroka', '/assets/pappa_heroka.png', '/assets/pappa_heroka_atlas.json');
         scene.load.atlas('toli', '/assets/toli.png', '/assets/toli_atlas.json');
     }
 
-    get Velocity(){
+    get Velocity() {
         return this.body.velocity;
     }
 
-    update(){
+    update() {
         if (!this.inputKeys) return;
 
         // If locked, stop all movement and return immediately
@@ -76,14 +76,14 @@ export default class Player extends Phaser.Physics.Matter.Sprite{
         const speed = baseSpeed * multiplier;
 
         const targetVelocity = new Phaser.Math.Vector2();
-        if(this.inputKeys.left.isDown){
+        if (this.inputKeys.left.isDown) {
             targetVelocity.x = -1;
-        } else if (this.inputKeys.right.isDown){
+        } else if (this.inputKeys.right.isDown) {
             targetVelocity.x = 1;
         }
-        if(this.inputKeys.up.isDown){
+        if (this.inputKeys.up.isDown) {
             targetVelocity.y = -1;
-        } else if (this.inputKeys.down.isDown){
+        } else if (this.inputKeys.down.isDown) {
             targetVelocity.y = 1;
         }
 
@@ -104,10 +104,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite{
             this.lastSafePosition = { x: this.x, y: this.y };
         }
 
-        if ((Math.abs(this.Velocity.x)>0.1) || (Math.abs(this.Velocity.y)>0.1)){
-            this.anims.play('hero_walk',true);
-        }else{
-            this.anims.play('hero_idle',true);
+        if ((Math.abs(this.Velocity.x) > 0.1) || (Math.abs(this.Velocity.y) > 0.1)) {
+            this.anims.play('hero_walk', true);
+        } else {
+            this.anims.play('hero_idle', true);
         }
     }
 
