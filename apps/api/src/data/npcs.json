@@ -1,0 +1,24 @@
+[
+    {
+        "id": "sage_clovis",
+        "name": "Clovis the Compiler",
+        "region": "Arrays Forest",
+        "dialogue": [
+            "Welcome, hero! If you’re stuck on sorting, head deeper into Arrays Forest.",
+            "The chest there has a Topic Revealer!",
+            "Did you know? Arrays are the foundation of all memory structures."
+        ],
+        "energyRefill": 10
+    },
+    {
+        "id": "bug_hunter_zin",
+        "name": "Zin the Bug Hunter",
+        "region": "Recursion Mountain",
+        "dialogue": [
+            "Careful with those infinite loops!",
+            "Pro tip: Finish Binary Search Mountain and the path to Two Pointers will open.",
+            "Want a hint on what to practice first?"
+        ],
+        "energyRefill": 10
+    }
+]
