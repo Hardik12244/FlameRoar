@@ -1,0 +1,115 @@
+{
+  "mapId": "map_1_syntax_province",
+  "name": "The Province of Syntax",
+  "description": "Master the fundamental building blocks of code.",
+  "npcs": {
+    "pappa_heroka": {
+      "id": "pappa_heroka",
+      "position": { "x": 288, "y": 512 },
+      "role": "tutorial",
+      "topic": "Game Mechanics",
+      "requirements": null,
+      "grants": "tutorial_completed",
+      "dialogue": {
+        "intro": "The world's Source Code is breaking, child. Use WASD to move. Talk to the Queen next.",
+        "progress": "The Queen is waiting just north of here."
+      }
+    },
+    "Queen": {
+      "id": "Queen",
+      "position": { "x": 416, "y": 384 },
+      "role": "mission_giver",
+      "topic": "Introduction",
+      "requirements": "tutorial_completed",
+      "grants": "codedex_unlocked",
+      "dialogue": {
+        "locked": "Speak to Pappa Heroka before approaching the throne.",
+        "intro": "Take this Code-Dex. A Thief has stolen our Royal Variables. Head North-East and bring them back!",
+        "progress": "The Thief was last seen near the North-East ruins."
+      }
+    },
+    "Thief": {
+      "id": "Thief",
+      "position": { "x": 1824, "y": 224 },
+      "role": "mini_boss",
+      "topic": "Variables & Data Types",
+      "requirements": "codedex_unlocked",
+      "grants": "medal_identity",
+      "dialogue": {
+        "locked": "You aren't worth my time yet. Get a Code-Dex first.",
+        "intro": "You want the Variables? You'll have to solve for 'X' first!",
+        "win": "Fine! Take the Identity Medal. You've got potential.",
+        "lose": "Ha! Your logic is as undefined as an uninitialized variable!"
+      }
+    },
+    "Mountainking": {
+      "id": "Mountainking",
+      "position": { "x": 1312, "y": 384 },
+      "role": "mini_boss",
+      "topic": "Operators & Expressions",
+      "requirements": "medal_identity",
+      "grants": "medal_logic",
+      "dialogue": {
+        "locked": "Only those who have captured the Thief may enter the King's Pass.",
+        "intro": "Let's see if your logic is greater than or equal to mine!",
+        "win": "Impressive. You've earned the Logic Medal.",
+        "lose": "Your math doesn't add up, traveler."
+      }
+    },
+    "Archer": {
+      "id": "Archer",
+      "position": { "x": 256, "y": 768 },
+      "role": "mini_boss",
+      "topic": "Conditionals (If/Else)",
+      "requirements": "medal_logic",
+      "grants": "medal_decision",
+      "dialogue": {
+        "locked": "The Mountain King must vouch for you before you face my arrows.",
+        "intro": "Life is a series of choices. Pick the wrong one and you're out!",
+        "win": "Sharp eye. The Decision Medal is yours.",
+        "lose": "You missed the target. Try rethinking your branching logic."
+      }
+    },
+    "Bishop": {
+      "id": "Bishop",
+      "position": { "x": 1696, "y": 832 },
+      "role": "mini_boss",
+      "topic": "Loops (For/While)",
+      "requirements": "medal_decision",
+      "grants": "medal_cycle",
+      "dialogue": {
+        "locked": "The Archer's Ridge is your current path. Return when you have the Decision Medal.",
+        "intro": "Repeat after me: Iteration is the path to enlightenment.",
+        "win": "You have broken the loop. Take the Cycle Medal.",
+        "lose": "You are stuck in an infinite loop of failure!"
+      }
+    },
+    "King": {
+      "id": "King",
+      "position": { "x": 1312, "y": 1632 },
+      "role": "gatekeeper",
+      "topic": "Final Trial Access",
+      "requirements": "medal_cycle",
+      "grants": "castle_key",
+      "dialogue": {
+        "locked": "A king only speaks to Masters. Collect all 4 medals of the province first.",
+        "intro": "You have the medals. I grant you the key to the Bottom-Left Castle. Prove yourself to the Mage.",
+        "progress": "The Mage awaits you in the Castle center."
+      }
+    },
+    "Mage": {
+      "id": "Mage",
+      "position": { "x": 576, "y": 1856 },
+      "role": "map_boss",
+      "topic": "Composite Syntax",
+      "requirements": "castle_key",
+      "grants": "map_1_complete",
+      "dialogue": {
+        "locked": "The Castle gates remain shut to you.",
+        "intro": "I am the Master of Syntax. Can you weave Variables, Loops, and Logic into one?",
+        "win": "Unbelievable! You have mastered the Province of Syntax. Map 2 awaits!",
+        "lose": "Magic requires precision. Your code is too messy!"
+      }
+    }
+  }
+}
