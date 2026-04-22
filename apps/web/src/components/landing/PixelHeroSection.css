@@ -1,0 +1,33 @@
+.pixel-hero {
+  position: relative;
+  width: 100%;
+  min-height: clamp(420px, 72vh, 760px);
+  border-top: 2px solid #0f3272;
+  border-bottom: 2px solid #082a56;
+  background: #0a2266;
+  overflow: hidden;
+}
+
+.pixel-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.04) 0,
+    rgba(255, 255, 255, 0.04) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  opacity: 0.22;
+  mix-blend-mode: soft-light;
+}
+
+.pixel-hero-canvas {
+  display: block;
+  width: 100%;
+  height: clamp(420px, 72vh, 760px);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
