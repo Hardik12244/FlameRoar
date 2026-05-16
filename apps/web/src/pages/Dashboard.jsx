@@ -1,7 +1,7 @@
 import React from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { 
   Shield, 
   Zap, 
@@ -42,34 +42,9 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="relative min-h-screen w-full bg-map-grass text-map-ink overflow-x-hidden">
-      {/* MAP WORLD SURFACE (matches index.css style) */}
-      <div className="fixed inset-0 pointer-events-none bg-linear-to-b from-map-water/20 via-map-grass/10 to-transparent" />
-      
-      {/* GRAIN OVERLAY */}
-      <div className="fixed inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/asfalt-light.png')]" />
+    <div className="relative w-full text-map-ink overflow-x-hidden">
+      <div className="relative z-10">
 
-      <div className="relative z-10 p-6 md:p-10">
-        
-        {/* TOP NAV / HEADER */}
-        <header className="flex justify-between items-center mb-10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-map-brown flex items-center justify-center shadow-lg shadow-map-brown/30">
-              <Shield className="text-white w-6 h-6" />
-            </div>
-            <h1 className="text-2xl font-black tracking-tighter uppercase italic text-map-brown">FlameRoar</h1>
-          </div>
-
-          <div className="flex items-center gap-4">
-             <div className="hidden md:flex items-center gap-2 bg-white/60 border border-map-brown/10 rounded-full px-4 py-1.5 backdrop-blur-sm shadow-sm">
-                <Coins className="w-4 h-4 text-map-brown" />
-                <span className="text-sm font-bold text-map-brown">{coins}</span>
-             </div>
-             <button onClick={() => navigate("/profile")} className="w-10 h-10 rounded-full border-2 border-white overflow-hidden hover:scale-110 transition-transform shadow-md">
-                <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=${username}`} alt="Avatar" />
-             </button>
-          </div>
-        </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-10 items-start">
 

@@ -11,7 +11,7 @@ const asyncHandler = require('express-async-handler');
 const onboardUser = asyncHandler(async (req, res) => {
     const { username, email, selectedClass } = req.body;
     // Extract ID from verified auth session instead of body to prevent spoofing
-    const clerkId = req.auth.userId;
+    const clerkId = req.auth().userId;
 
     const userExists = await User.findOne({ clerkId });
     if (userExists) {
@@ -41,7 +41,7 @@ const onboardUser = asyncHandler(async (req, res) => {
  */
 const getUserProfile = asyncHandler(async (req, res) => {
     // req.auth is provided by Clerk middleware
-    const user = await User.findOne({ clerkId: req.auth.userId });
+    const user = await User.findOne({ clerkId: (typeof req.auth === 'function' ? req.auth().userId : req.auth.userId) });
     
     if (!user) {
         res.status(404);

@@ -1,9 +1,40 @@
 {
-  "name": "flameroar-monorepo",
+  "name": "rpg-learning-engine-v2",
   "private": true,
-  "workspaces": [
-    "apps/api",
-    "apps/web"
-  ]
+  "version": "2.0.0",
+  "description": "Repo-level scripts for the Gamified Education Platform",
+  "main": "apps/api/src/server.js",
+  "scripts": {
+    "start": "node apps/api/src/server.js",
+    "dev": "npx nodemon apps/api/src/server.js",
+    "dev:api": "npx nodemon apps/api/src/server.js",
+    "dev:web": "npm --prefix apps/web run dev",
+    "build:web": "npm --prefix apps/web run build",
+    "lint:web": "npm --prefix apps/web run lint",
+    "dev:all": "npx concurrently -n api,web -c magenta,cyan \"npm run dev:api\" \"npm run dev:web\"",
+    "audit": "node apps/api/tests/masterAudit.js"
+  },
+  "dependencies": {
+    "@clerk/express": "^1.1.0",
+    "@google/generative-ai": "^0.24.1",
+    "axios": "^1.15.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.19.2",
+    "express-async-handler": "^1.2.0",
+    "helmet": "^8.1.0",
+    "monaco-editor": "^0.53.0",
+    "mongoose": "^8.2.1",
+    "morgan": "^1.10.0",
+    "openai": "^4.28.1",
+    "phaser": "^3.90.0",
+    "socket.io": "^4.7.4",
+    "socket.io-client": "^4.8.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.0"
+  }
 }
-

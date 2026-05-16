@@ -1,0 +1,52 @@
+{
+    "anims": [
+        {
+            "key": "hero_idle",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 6,
+            "frames": [
+                {
+                    "key": "you",
+                    "frame": "knight_idle_1"
+                },
+                {
+                    "key": "you",
+                    "frame": "knight_idle_2"
+                },
+                {
+                    "key": "you",
+                    "frame": "knight_idle_3"
+                },
+                {
+                    "key": "you",
+                    "frame": "knight_idle_4"
+                }
+            ]
+        },
+        {
+            "key": "hero_walk",
+            "type": "frames",
+            "repeat": -1,
+            "frameRate": 12,
+            "frames": [
+                {
+                    "key": "you",
+                    "frame": "knight_walk_2"
+                },
+                {
+                    "key": "you",
+                    "frame": "knight_walk_1"
+                },
+                {
+                    "key": "you",
+                    "frame": "knight_walk_3"
+                },
+                {
+                    "key": "you",
+                    "frame": "knight_walk_4"
+                }
+            ]
+        }
+    ]
+}

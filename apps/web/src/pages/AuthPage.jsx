@@ -4,6 +4,27 @@ import { useAuth as useClerkAuth, SignIn, SignUp } from '@clerk/clerk-react';
 import { Shield, User, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { MapWorldBackground } from '../components/map-ui';
+import { motion } from 'framer-motion';
+
+const clerkAppearance = {
+  layout: {
+    applicationName: 'FlameRoar',
+    logoImageUrl: '',
+    showOptionalFields: false,
+    socialButtonsVariant: 'blockButton',
+  },
+  elements: {
+    rootBox: 'w-full',
+    card: 'bg-transparent shadow-none w-full border-none',
+    card__main: 'p-0',
+    headerTitle: 'text-map-ink font-bold',
+    headerSubtitle: 'text-map-ink-muted',
+    formButtonPrimary: 'bg-map-brown hover:bg-map-brown-soft text-white shadow-sm',
+    formFieldInput: 'border-map-brown/20 focus:border-map-brown/45 focus:ring-map-water/40 rounded-xl',
+    footerActionLink: 'text-map-brown hover:text-map-brown-soft',
+    identityPreviewEditButton: 'text-map-brown',
+  },
+};
 
 const AuthPage = () => {
   const [formData, setFormData] = useState({
@@ -31,52 +52,109 @@ const AuthPage = () => {
   if (!isSignedIn) {
      return (
         <MapWorldBackground className="flex min-h-screen w-full flex-col items-center justify-center p-4 text-map-ink">
-            <div className="mb-8 text-center">
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="mb-8 text-center"
+            >
                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-map-brown/25 bg-gradient-to-b from-map-sand to-map-sand-deep shadow-[var(--shadow-map-soft)]">
                   <Shield className="h-7 w-7 text-map-brown" />
                 </div>
                 <h1 className="text-3xl font-bold md:text-4xl">FlameRoar <span className="text-2xl">🔥</span></h1>
                 <p className="mt-2 font-semibold text-map-brown">DSA learning that feels like an adventure</p>
                 <p className="mt-1 text-sm text-map-ink-muted">Progress in the world = progress in skill.</p>
-            </div>
+            </motion.div>
             
-            <div className="relative z-10 w-full max-w-md rounded-2xl border border-white/55 bg-white shadow-(--shadow-map-lift) overflow-hidden">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: 0.15 }}
+              className="relative z-10 w-full max-w-md rounded-2xl border border-white/55 bg-white shadow-(--shadow-map-lift) overflow-hidden"
+            >
                 <div className="bg-map-brown/10 h-1 w-full" />
                 <div className="p-4">
                   {showSignUp ? (
-                    <SignUp routing="hash" signInUrl="/#signin" appearance={{ elements: { rootBox: "w-full", card: "bg-transparent shadow-none w-full border-none", card__main: "p-0" } }} /> 
+                    <SignUp 
+                      routing="hash" 
+                      signInUrl="/#signin" 
+                      appearance={clerkAppearance} 
+                      localization={{
+                        signUp: {
+                          start: {
+                            title: 'Create your Hero',
+                            subtitle: 'Join FlameRoar and start your adventure'
+                          }
+                        }
+                      }}
+                    /> 
                   ) : (
-                    <SignIn routing="hash" signUpUrl="/#signup" appearance={{ elements: { rootBox: "w-full", card: "bg-transparent shadow-none w-full border-none", card__main: "p-0" } }} />
+                    <SignIn 
+                      routing="hash" 
+                      signUpUrl="/#signup" 
+                      appearance={clerkAppearance} 
+                      localization={{
+                        signIn: {
+                          start: {
+                            title: 'Sign in to FlameRoar',
+                            subtitle: 'Continue your adventure'
+                          }
+                        }
+                      }}
+                    />
                   )}
                 </div>
-            </div>
+            </motion.div>
             
-            <button type="button" onClick={() => setShowSignUp(!showSignUp)} className="mt-6 text-sm font-semibold text-map-brown underline-offset-4 transition hover:underline">
+            <motion.button 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              type="button" 
+              onClick={() => setShowSignUp(!showSignUp)} 
+              className="mt-6 text-sm font-semibold text-map-brown underline-offset-4 transition hover:underline"
+            >
                 {showSignUp ? "Already a hero? Sign In" : "New here? Sign Up"}
-            </button>
+            </motion.button>
         </MapWorldBackground>
      );
   }
 
+
+
   if (needsOnboarding) {
     return (
         <MapWorldBackground className="flex min-h-screen w-full items-center justify-center p-4 text-map-ink">
-          <div className="glass-panel relative w-full max-w-md overflow-hidden p-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="glass-panel relative w-full max-w-md overflow-hidden p-8"
+          >
             <div className="pointer-events-none absolute left-1/2 top-0 h-32 w-full -translate-x-1/2 rounded-full bg-map-water/25 blur-3xl mix-blend-multiply" />
 
             <div className="relative z-10 mb-8 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-map-brown/25 bg-white/70">
+              <motion.div 
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
+                className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-map-brown/25 bg-white/70"
+              >
                 <Shield className="h-8 w-8 text-map-brown" />
-              </div>
+              </motion.div>
               <h1 className="text-3xl font-bold">Forge your legend</h1>
               <p className="mt-1 text-sm text-map-ink-muted">Identity verified — choose how you appear in the world.</p>
             </div>
 
             {error && (
-              <div className="mb-6 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+              <motion.div 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="mb-6 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+              >
                 <AlertCircle className="h-5 w-5 shrink-0" />
                 <p>{error}</p>
-              </div>
+              </motion.div>
             )}
 
             <form onSubmit={handleOnboardSubmit} className="relative z-10 space-y-5">
@@ -87,12 +165,15 @@ const AuthPage = () => {
                     <input
                       type="text"
                       required
+                      minLength={3}
+                      maxLength={20}
                       placeholder="e.g. Async Ninja"
                       className="input-field pl-10"
                       value={formData.username}
                       onChange={(e) => setFormData({...formData, username: e.target.value})}
                     />
                   </div>
+                  <p className="mt-1 text-xs text-map-ink-muted/60">3-20 characters, this is your in-game identity.</p>
               </div>
 
               <div>
@@ -109,20 +190,31 @@ const AuthPage = () => {
                   </select>
               </div>
 
-              <button type="submit" className="btn-primary mt-2 w-full">
+              <motion.button 
+                type="submit" 
+                className="btn-primary mt-2 w-full"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
                 Initialize profile
-              </button>
+              </motion.button>
             </form>
-          </div>
+          </motion.div>
         </MapWorldBackground>
       );
   }
 
   return (
-    <MapWorldBackground className="flex h-screen w-screen items-center justify-center text-map-ink-muted">
-      Authenticating…
+    <MapWorldBackground className="flex h-screen w-screen flex-col items-center justify-center gap-4 text-map-ink-muted">
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+        className="h-8 w-8 rounded-full border-2 border-map-brown/20 border-t-map-brown"
+      />
+      <p className="text-sm font-medium">Authenticating…</p>
     </MapWorldBackground>
   );
 };
 
 export default AuthPage;
+

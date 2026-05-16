@@ -1,12 +1,14 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Gamepad2, User, Trophy, Map } from "lucide-react";
+import { Home, Gamepad2, User, Trophy, Map, Store, Sparkles } from "lucide-react";
 import { cn } from "../../utils/cn";
 
 const zones = [
   { name: "Hub", path: "/dashboard", icon: Home },
   { name: "Battle Arena", path: "/game", icon: Gamepad2 },
+  { name: "Explore", path: "/explore", icon: Store },
+  { name: "Skill Tree", path: "/skill-tree", icon: Sparkles },
   { name: "Profile", path: "/profile", icon: User },
   { name: "Leaderboard", path: "/leaderboard", icon: Trophy },
 ];
@@ -17,22 +19,28 @@ function ZoneLink({ item, collapsed }) {
   const Icon = item.icon;
 
   return (
-    <li className="flex flex-col items-center">
+    <li className="relative flex flex-col items-center">
       <Link
         to={item.path}
+        title={collapsed ? item.name : undefined}
         className={cn(
-          "group flex w-full items-center gap-2 rounded-lg py-2 px-2 transition-all duration-200",
+          "group relative flex w-full items-center gap-2 rounded-lg py-2 px-2 transition-all duration-200",
           active
             ? "border border-[#7d5b2f] bg-[#f3e2bb] shadow-[0_2px_0_#9f7742,0_4px_0_#664724]"
             : "hover:bg-[#f0dfb8]/65"
         )}
       >
+        {/* Active indicator dot */}
+        {active && (
+          <span className="absolute -left-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-[#82b44f] shadow-[0_0_6px_rgba(130,180,79,0.5)]" />
+        )}
+
         <div
           className={cn(
-            "flex h-9 w-9 items-center justify-center rounded-md border-2",
+            "flex h-9 w-9 shrink-0 items-center justify-center rounded-md border-2 transition-transform duration-150",
             active
               ? "border-[#795a2e] bg-[#f7e6c0]"
-              : "border-[#8a7249]/45 bg-[#f8eacc]/70"
+              : "border-[#8a7249]/45 bg-[#f8eacc]/70 group-hover:scale-105"
           )}
         >
           <Icon className="h-4 w-4" />
@@ -44,7 +52,10 @@ function ZoneLink({ item, collapsed }) {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="text-sm text-[#5a4726]"
+              className={cn(
+                "text-sm truncate",
+                active ? "font-semibold text-[#3a2a12]" : "text-[#5a4726]"
+              )}
             >
               {item.name}
             </motion.span>

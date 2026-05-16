@@ -5,7 +5,3 @@ export { StepPath } from "./StepPath";
 export { FloatingStatCard } from "./FloatingStatCard";
 export { CTAHub } from "./CTAHub";
 export { MinimalFooter } from "./MinimalFooter";
-export { MarketplaceSection } from "./MarketplaceSection";
-export { LeaderboardSection } from "./LeaderboardSection";
-export { ProfileSection } from "./ProfileSection";
-export { DashboardSection } from "./DashboardSection";

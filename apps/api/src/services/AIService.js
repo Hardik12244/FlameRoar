@@ -1,12 +1,24 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { isMock, isAIMock } = require('../config/env');
 
-const apiKey = process.env.OPENAI_API_KEY || '';
-const isGroq = apiKey.startsWith('gsk_');
+const forcedProvider = (process.env.AI_PROVIDER || '').trim().toLowerCase();
+const legacyApiKey = process.env.OPENAI_API_KEY || '';
+const geminiApiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '';
+const groqApiKey = process.env.GROQ_API_KEY || (legacyApiKey.startsWith('gsk_') ? legacyApiKey : '');
+
+const resolvedGeminiKey = geminiApiKey || (!legacyApiKey.startsWith('gsk_') ? legacyApiKey : '');
+const canUseGroq = Boolean(groqApiKey);
+const canUseGemini = Boolean(resolvedGeminiKey);
+
+const isGroq = !isAIMock && (
+    (forcedProvider === 'groq' && canUseGroq) ||
+    (forcedProvider !== 'gemini' && canUseGroq && !canUseGemini)
+);
+const geminiModelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
 
 // Only init Gemini if it's NOT a Groq key and NOT mocking AI
-const genAI = (isAIMock || isGroq) ? null : new GoogleGenerativeAI(apiKey);
-const model = genAI ? genAI.getGenerativeModel({ model: "gemini-2.0-flash" }) : null;
+const genAI = (isAIMock || isGroq || !canUseGemini) ? null : new GoogleGenerativeAI(resolvedGeminiKey);
+const model = genAI ? genAI.getGenerativeModel({ model: geminiModelName }) : null;
 
 // ──────────────────────────────────────────────
 // Groq API Fetch Wrapper
@@ -16,7 +28,7 @@ const generateGroqContent = async (prompt) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
+            'Authorization': `Bearer ${groqApiKey}`
         },
         body: JSON.stringify({
             model: 'llama3-8b-8192',
@@ -45,7 +57,7 @@ const askAI = async (prompt) => {
         const result = await model.generateContent(prompt);
         return result.response.text();
     }
-    throw new Error('No AI provider configured');
+    throw new Error('No AI provider configured. Set GEMINI_API_KEY (recommended) or GROQ_API_KEY in your root .env file.');
 };
 
 const withRetry = async (operation, maxRetries = 5) => {
@@ -818,6 +830,45 @@ const generateHintForQuestion = async (questionText, topic, difficulty = 1, hint
 };
 
 // ──────────────────────────────────────────────
+// Support Chatbot
+// ──────────────────────────────────────────────
+const getSupportResponse = async (message, user = {}) => {
+    const safeMessage = String(message || '').trim();
+    if (!safeMessage) {
+        return 'Tell me what concept is blocking you, and I will guide you step by step.';
+    }
+
+    if (isAIMock) {
+        return `I hear you. For "${safeMessage}", start with one tiny example, trace it by hand, then test one edge case. If you want, I can give a loop/array style hint next.`;
+    }
+
+    try {
+        const userLevel = typeof user.level === 'number' ? user.level : 1;
+        const learnedTopics = Array.isArray(user.learnedTopics) ? user.learnedTopics.slice(-5) : [];
+
+        const prompt = `
+You are Bit, a concise coding mentor inside an RPG learning game.
+User message: "${safeMessage}"
+User context:
+- Level: ${userLevel}
+- Learned topics: ${learnedTopics.join(', ') || 'none yet'}
+
+Rules:
+- Give practical guidance in 3-6 short sentences.
+- Be encouraging, accurate, and beginner-friendly.
+- If the user asks for a direct answer, provide a guided hint first.
+- Prefer JavaScript examples when needed.
+- No markdown code fences.
+`;
+
+        const resultText = await withRetry(() => askAI(prompt));
+        return resultText.trim();
+    } catch (error) {
+        return 'Bit lost signal for a moment. Try reframing your doubt in one line, and I will guide you with a focused hint.';
+    }
+};
+
+// ──────────────────────────────────────────────
 // Lesson Generation
 // ──────────────────────────────────────────────
 const generateLesson = async (topic, difficulty = 1) => {
@@ -886,6 +937,7 @@ module.exports = {
     generateQuestion,
     generateHint,
     generateHintForQuestion,
+    getSupportResponse,
     generateLesson,
     simulateAIResponseTime,
     clearQuestionHistory

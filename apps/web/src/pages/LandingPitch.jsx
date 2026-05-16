@@ -1,6 +1,6 @@
 import React from "react";
-import { motion } from "framer-motion";
-import { Flame } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Flame, Menu, X } from "lucide-react";
 import Chatbot from "../components/ChatBot";
 import { MapWorldBackground, MapButton } from "../components/map-ui";
 import PixelHeroSection from "../components/landing/PixelHeroSection";
@@ -40,6 +40,8 @@ const capabilities = [
 ];
 
 export default function LandingPitch() {
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
   return (
     <MapWorldBackground className="min-h-screen overflow-x-hidden font-sans text-map-ink">
       <Chatbot />
@@ -74,20 +76,68 @@ export default function LandingPitch() {
             ))}
           </nav>
 
-          <motion.div
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4 }}
-            className="inline-block"
-          >
-            <MapButton to="/auth" className="px-5 py-2 text-xs">
-              Start the Game
-            </MapButton>
-          </motion.div>
+          <div className="flex items-center gap-3">
+            <motion.div
+              initial={{ opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4 }}
+              className="hidden md:inline-block"
+            >
+              <MapButton to="/auth" className="px-5 py-2 text-xs">
+                Start the Game
+              </MapButton>
+            </motion.div>
+
+            {/* Mobile menu button */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md border-2 border-[#8f5f17]/50 bg-[#e1a929]/20 text-white/90 transition hover:bg-[#e1a929]/40 md:hidden"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile nav dropdown */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.nav
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25 }}
+              className="overflow-hidden border-t border-[#0b2f72]/50 md:hidden"
+            >
+              <div className="flex flex-col gap-1 px-6 py-4">
+                {navItems.map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="rounded-lg px-3 py-2.5 text-sm font-extrabold tracking-wider text-white/90 transition hover:bg-white/10 hover:text-[#ffe07a]"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+                <div className="mt-2 pt-2 border-t border-white/10">
+                  <MapButton to="/auth" className="w-full px-5 py-2.5 text-xs text-center">
+                    Start the Game
+                  </MapButton>
+                </div>
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </header>
 
       <main>
+
         <PixelHeroSection />
 
         <div id="world" className="scroll-mt-24">

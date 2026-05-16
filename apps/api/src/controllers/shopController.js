@@ -31,7 +31,7 @@ const purchaseItem = asyncHandler(async (req, res) => {
         throw new Error('Invalid item type');
     }
 
-    const user = await User.findOne({ clerkId: req.auth.userId });
+    const user = await User.findOne({ clerkId: req.auth().userId });
 
     if (!user) {
         res.status(404);

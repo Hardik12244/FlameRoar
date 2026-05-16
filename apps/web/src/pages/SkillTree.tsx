@@ -15,6 +15,7 @@ import {
   X,
 } from 'lucide-react';
 import { cn } from '../utils/cn';
+import Chatbot from '../components/ChatBot';
 
 type SkillStatus = 'locked' | 'unlocked' | 'mastered';
 
@@ -152,6 +153,7 @@ export default function SkillTree() {
 
   return (
     <div className="min-h-screen bg-background text-foreground px-4 py-6 md:px-8 md:py-8">
+      <Chatbot welcomeMessage="Hey, I am your Skill Tree tutor. Ask me any concept doubt ✨" />
       <div className="mx-auto max-w-7xl space-y-6">
         <motion.header
           initial={{ opacity: 0, y: 10 }}
