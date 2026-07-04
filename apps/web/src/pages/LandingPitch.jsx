@@ -1,7 +1,6 @@
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Flame, Menu, X } from "lucide-react";
-import Chatbot from "../components/ChatBot";
+import { motion, AnimatePresence } from "framer-motion";
 import { MapWorldBackground, MapButton } from "../components/map-ui";
 import PixelHeroSection from "../components/landing/PixelHeroSection";
 import {
@@ -44,7 +43,6 @@ export default function LandingPitch() {
 
   return (
     <MapWorldBackground className="min-h-screen overflow-x-hidden font-sans text-map-ink">
-      <Chatbot />
 
       <header className="sticky top-0 z-50 border-b-2 border-[#0b2f72] bg-[#123d8f]/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 lg:px-10">

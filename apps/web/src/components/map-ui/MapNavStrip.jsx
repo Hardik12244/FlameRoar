@@ -67,27 +67,61 @@ function ZoneLink({ item, collapsed }) {
 }
 
 export function MapNavStrip({ collapsed, setCollapsed }) {
+  const location = useLocation();
   return (
-    <motion.nav
-      animate={{ width: collapsed ? 72 : 180 }}
-      transition={{ duration: 0.25 }}
-      className="fixed top-0 left-0 z-40 hidden h-screen flex-col border-r-2 border-[#6b4f29] bg-[#f0dfb8]/95 py-6 shadow-[2px_0_0_#9e7944] md:flex"
-    >
-      {/* TOGGLE */}
-      <div className="mb-6 flex justify-center">
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="flex h-10 w-10 items-center justify-center rounded-md border-2 border-[#7a5d30] bg-[#f7e7c3] shadow-[0_2px_0_#a07842,0_4px_0_#664725] transition hover:scale-105"
-        >
-          <Map className="h-5 w-5 text-[#6f4d22]" />
-        </button>
-      </div>
+    <>
+      {/* DESKTOP SIDEBAR */}
+      <motion.nav
+        animate={{ width: collapsed ? 72 : 180 }}
+        transition={{ duration: 0.25 }}
+        className="fixed top-0 left-0 z-40 hidden h-screen flex-col border-r-2 border-[#6b4f29] bg-[#f0dfb8]/95 py-6 shadow-[2px_0_0_#9e7944] md:flex"
+      >
+        {/* TOGGLE */}
+        <div className="mb-6 flex justify-center">
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="flex h-10 w-10 items-center justify-center rounded-md border-2 border-[#7a5d30] bg-[#f7e7c3] shadow-[0_2px_0_#a07842,0_4px_0_#664725] transition hover:scale-105"
+          >
+            <Map className="h-5 w-5 text-[#6f4d22]" />
+          </button>
+        </div>
 
-      <ul className="flex flex-col gap-3 px-2">
-        {zones.map((item) => (
-          <ZoneLink key={item.path} item={item} collapsed={collapsed} />
-        ))}
-      </ul>
-    </motion.nav>
+        <ul className="flex flex-col gap-3 px-2">
+          {zones.map((item) => (
+            <ZoneLink key={item.path} item={item} collapsed={collapsed} />
+          ))}
+        </ul>
+      </motion.nav>
+
+      {/* MOBILE BOTTOM NAV */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 flex md:hidden items-center justify-around border-t-2 border-[#6b4f29] bg-[#f0dfb8] py-2 px-1 shadow-[0_-4px_12px_rgba(0,0,0,0.2)]">
+        {zones.map((item) => {
+          const Icon = item.icon;
+          const active = location.pathname === item.path;
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={cn(
+                "flex flex-col items-center gap-1 p-1 rounded-lg transition-all",
+                active ? "text-[#3a2a12] font-black" : "text-[#5a4726] opacity-75 hover:opacity-100"
+              )}
+            >
+              <div
+                className={cn(
+                  "flex h-8 w-8 items-center justify-center rounded-md border transition-transform",
+                  active
+                    ? "border-[#795a2e] bg-[#f7e6c0] scale-110 shadow-sm"
+                    : "border-transparent bg-transparent"
+                )}
+              >
+                <Icon className="h-4 w-4" />
+              </div>
+              <span className="text-[9px] font-pixel tracking-tight truncate max-w-[48px] text-center">{item.name}</span>
+            </Link>
+          );
+        })}
+      </nav>
+    </>
   );
 }

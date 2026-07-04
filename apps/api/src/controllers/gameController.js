@@ -26,6 +26,21 @@ const DEFAULT_UNLOCKED_REGIONS = Object.freeze({
 
 const BATTLE_NPC_KINDS = new Set(['miniBoss', 'boss']);
 
+const recordActivity = (user, type, topic, isCorrect, xpGained = 0) => {
+    if (!user) return;
+    if (!Array.isArray(user.activityHistory)) user.activityHistory = [];
+    user.activityHistory.unshift({
+        type,
+        topic: topic || 'General Coding',
+        isCorrect: Boolean(isCorrect),
+        xpGained: Number(xpGained) || 0,
+        timestamp: new Date()
+    });
+    if (user.activityHistory.length > 50) {
+        user.activityHistory = user.activityHistory.slice(0, 50);
+    }
+};
+
 const SYNTAX_PROVINCE_NPCS = Object.freeze({
     pappa_heroka: {
         id: 'pappa_heroka',
@@ -565,6 +580,12 @@ const getChallenge = asyncHandler(async (req, res) => {
 
 const submitAnswer = asyncHandler(async (req, res) => {
     const { isCorrect, topic, difficulty } = req.body;
+    if (typeof isCorrect !== 'boolean') {
+        return res.status(400).json({ error: 'isCorrect must be a boolean value' });
+    }
+    if (topic && (typeof topic !== 'string' || topic.length > 100)) {
+        return res.status(400).json({ error: 'Topic must be a string under 100 characters' });
+    }
     const user = await loadUser(req, res);
 
     let xpGained = 0;
@@ -612,6 +633,7 @@ const submitAnswer = asyncHandler(async (req, res) => {
         }
 
         const { leveledUp, levelsGained } = applyLevelUps(user);
+        recordActivity(user, 'challenge', topic, true, xpGained);
         await user.save();
 
         return res.json({
@@ -638,6 +660,7 @@ const submitAnswer = asyncHandler(async (req, res) => {
     focusChange = -15;
     MechanicsService.updateFocusEnergy(user, focusChange);
     failureLesson = await AIService.generateLesson(topic);
+    recordActivity(user, 'challenge', topic, false, 0);
 
     await user.save();
 
@@ -742,6 +765,9 @@ const getLesson = asyncHandler(async (req, res) => {
 const resolveLesson = asyncHandler(async (req, res) => {
     const { lessonId } = req.params;
     const { action = 'complete' } = req.body || {};
+    if (lessonId && (typeof lessonId !== 'string' || lessonId.length > 100)) {
+        return res.status(400).json({ error: 'Invalid lessonId format' });
+    }
     const user = await loadUser(req, res);
 
     if (!['complete', 'skip'].includes(action)) {
@@ -754,6 +780,9 @@ const resolveLesson = asyncHandler(async (req, res) => {
         : { leveledUp: false, levelsGained: 0 };
 
     user.unlockedRegions = buildUnlockedRegions(user);
+    if (action === 'complete') {
+        recordActivity(user, 'lesson', lessonId || 'Mini Lesson', true, 15);
+    }
     await user.save();
 
     return res.json({
@@ -875,6 +904,9 @@ const interactWithNpc = asyncHandler(async (req, res) => {
 
 const resolveNpcBattle = asyncHandler(async (req, res) => {
     const { outcome, difficulty, caughtConcept } = req.body;
+    if (!outcome || !['win', 'lose', 'flee'].includes(outcome)) {
+        return res.status(400).json({ error: 'Outcome must be win, lose, or flee' });
+    }
     const user = await loadUser(req, res);
     const npc = getNpcFromRequest(req, res);
     const npcStatus = buildNpcStatus(user, npc);
@@ -951,6 +983,7 @@ const resolveNpcBattle = asyncHandler(async (req, res) => {
         mentorPrompt = buildMentorPrompt(user, currentFailCount);
     }
 
+    recordActivity(user, 'boss', npc.name || npc.topic || 'Boss Battle', outcome === 'win', xpGained);
     await user.save();
 
     return res.json({
@@ -971,6 +1004,9 @@ const resolveNpcBattle = asyncHandler(async (req, res) => {
 
 const consumeItem = asyncHandler(async (req, res) => {
     const { itemType } = req.body;
+    if (!itemType || typeof itemType !== 'string' || itemType.length > 50) {
+        return res.status(400).json({ message: 'Valid itemType string is required.' });
+    }
     const user = await loadUser(req, res);
 
     if (!user.inventory || user.inventory.length === 0) {
@@ -1032,21 +1068,6 @@ const consumeItem = asyncHandler(async (req, res) => {
     });
 });
 
-const chatWithSupport = asyncHandler(async (req, res) => {
-    const { message } = req.body;
-    const user = await loadUser(req, res);
-
-    const response = AIService.getSupportResponse
-        ? await AIService.getSupportResponse(message, user)
-        : `Bit is recalibrating. Current region: ${user.currentRegion}. Keep pushing through Syntax Province.`;
-
-    return res.json({
-        sprite: 'Bit',
-        response,
-        timestamp: new Date()
-    });
-});
-
 const getHint = asyncHandler(async (req, res) => {
     const { questionText, topic, difficulty, hintLevel } = req.body;
     const user = await loadUser(req, res);
@@ -1072,6 +1093,5 @@ module.exports = {
     interactWithNpc,
     resolveNpcBattle,
     consumeItem,
-    chatWithSupport,
     getHint
 };

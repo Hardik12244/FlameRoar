@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { isMock, MONGODB_URI } = require('./env');
+const { isMock } = require('./env');
 
 const connectDB = async () => {
     if (isMock) {

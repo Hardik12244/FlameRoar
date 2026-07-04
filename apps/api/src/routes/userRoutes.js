@@ -4,6 +4,7 @@ const { requireAuth } = require('@clerk/express');
 const { 
     onboardUser, 
     getUserProfile, 
+    getUserHistory,
     updateStats,
     saveExploredChunk,
     getLeaderboard
@@ -49,6 +50,7 @@ router.post('/onboard', onboardUser);
  *         description: Hero profile data
  */
 router.get('/profile', protect, getUserProfile);
+router.get('/history', protect, getUserHistory);
 
 /**
  * @swagger

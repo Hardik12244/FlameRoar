@@ -19,6 +19,7 @@ import GuildPage from './pages/GuildPage';
 import SkillTree from './pages/SkillTree';
 import Inventory from './pages/Inventory';
 import SkillLearningPage from './pages/SkillLearningPage';
+import HistoryPage from './pages/HistoryPage';
 
 const ProtectedRoute = ({ children }) => {
   const { user, needsOnboarding, loading } = useAuth();
@@ -57,6 +58,7 @@ const AppRoutes = () => {
       <Route path="/skill-tree" element={<ProtectedRoute><SkillTree /></ProtectedRoute>} />
       <Route path="/skill-tree/learn/:topicId" element={<ProtectedRoute><SkillLearningPage /></ProtectedRoute>} />
       <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
+      <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

@@ -11,7 +11,17 @@ const asyncHandler = require('express-async-handler');
 const onboardUser = asyncHandler(async (req, res) => {
     const { username, email, selectedClass } = req.body;
     // Extract ID from verified auth session instead of body to prevent spoofing
-    const clerkId = req.auth().userId;
+    const clerkId = typeof req.auth === 'function' ? req.auth().userId : req.auth.userId;
+
+    if (!username || typeof username !== 'string' || username.trim().length < 2 || username.length > 30) {
+        res.status(400);
+        throw new Error('Hero name must be between 2 and 30 characters');
+    }
+    const validClasses = ['Array Knight', 'Recursion Mage', 'Graph Assassin', 'Pointer Paladin'];
+    if (!selectedClass || !validClasses.includes(selectedClass)) {
+        res.status(400);
+        throw new Error('Invalid hero class selected');
+    }
 
     const userExists = await User.findOne({ clerkId });
     if (userExists) {
@@ -22,8 +32,8 @@ const onboardUser = asyncHandler(async (req, res) => {
     // Titanium Hardening: Strict sanitization to prevent cheats
     const user = await User.create({
         clerkId,
-        username,
-        email,
+        username: username.trim(),
+        email: typeof email === 'string' ? email.trim() : '',
         class: selectedClass,
         // Enforce defaults
         level: 1,
@@ -73,7 +83,21 @@ const updateStats = asyncHandler(async (req, res) => {
         throw new Error('Unauthorized system call');
     }
 
-    const user = await User.findOne({ clerkId: req.auth.userId });
+    if (energyChange !== undefined && (typeof energyChange !== 'number' || isNaN(energyChange))) {
+        res.status(400);
+        throw new Error('energyChange must be a valid number');
+    }
+    if (coinChange !== undefined && (typeof coinChange !== 'number' || isNaN(coinChange) || Math.abs(coinChange) > 10000)) {
+        res.status(400);
+        throw new Error('coinChange exceeds allowed limits or is invalid');
+    }
+    if (xpChange !== undefined && (typeof xpChange !== 'number' || isNaN(xpChange) || Math.abs(xpChange) > 50000)) {
+        res.status(400);
+        throw new Error('xpChange exceeds allowed limits or is invalid');
+    }
+
+    const clerkId = typeof req.auth === 'function' ? req.auth().userId : req.auth.userId;
+    const user = await User.findOne({ clerkId });
 
     if (user) {
         if (energyChange) MechanicsService.updateFocusEnergy(user, energyChange);
@@ -97,12 +121,13 @@ const updateStats = asyncHandler(async (req, res) => {
 const saveExploredChunk = asyncHandler(async (req, res) => {
     const { chunkKey } = req.body;
 
-    if (!chunkKey) {
+    if (!chunkKey || typeof chunkKey !== 'string' || chunkKey.length > 50) {
         res.status(400);
-        throw new Error('Chunk key required');
+        throw new Error('Valid chunk key required (max 50 chars)');
     }
 
-    const user = await User.findOne({ clerkId: req.auth.userId });
+    const clerkId = typeof req.auth === 'function' ? req.auth().userId : req.auth.userId;
+    const user = await User.findOne({ clerkId });
 
     if (user) {
         if (!user.exploredTiles) {
@@ -204,9 +229,28 @@ const getLeaderboard = asyncHandler(async (req, res) => {
     });
 });
 
+const getUserHistory = asyncHandler(async (req, res) => {
+    const clerkId = typeof req.auth === 'function' ? req.auth().userId : req.auth.userId;
+    const user = await User.findOne({ clerkId });
+    if (!user) {
+        res.status(404);
+        throw new Error('Hero not found');
+    }
+    res.json({
+        activityHistory: user.activityHistory || [],
+        questionsSolved: user.questionsSolved || 0,
+        questionsAttempted: user.questionsAttempted || 0,
+        learnedTopics: user.learnedTopics || [],
+        bossesDefeated: user.bossesDefeated || [],
+        medalsCount: user.medalsCount || [],
+        skillDex: user.skillDex || []
+    });
+});
+
 module.exports = {
     onboardUser,
     getUserProfile,
+    getUserHistory,
     updateStats,
     saveExploredChunk,
     getLeaderboard

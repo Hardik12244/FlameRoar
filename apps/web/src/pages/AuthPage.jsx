@@ -33,7 +33,7 @@ const AuthPage = () => {
   });
   const [error, setError] = useState('');
   const [showSignUp, setShowSignUp] = useState(false);
-  const { onboard, needsOnboarding } = useAuth();
+  const { onboard, needsOnboarding, loginAsDemo } = useAuth();
   const { isSignedIn } = useClerkAuth();
   const navigate = useNavigate();
 
@@ -116,6 +116,22 @@ const AuthPage = () => {
             >
                 {showSignUp ? "Already a hero? Sign In" : "New here? Sign Up"}
             </motion.button>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="mt-6 pt-6 border-t border-map-brown/15 w-full max-w-md text-center"
+            >
+              <button
+                type="button"
+                onClick={() => loginAsDemo()}
+                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-sm shadow-md hover:from-amber-600 hover:to-orange-600 transition-all flex items-center justify-center gap-2"
+              >
+                <span>⚡ Launch Instant Demo (Guest Mode)</span>
+              </button>
+              <p className="text-[11px] text-map-ink-muted mt-1.5">No login required • Instant access for recruiter evaluation</p>
+            </motion.div>
         </MapWorldBackground>
      );
   }

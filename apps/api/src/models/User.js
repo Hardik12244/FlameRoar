@@ -242,6 +242,17 @@ const userSchema = new mongoose.Schema({
         default: {}
     },
 
+    activityHistory: {
+        type: [{
+            type: { type: String, enum: ['challenge', 'lesson', 'boss'], required: true },
+            topic: { type: String, required: true },
+            isCorrect: { type: Boolean, default: true },
+            xpGained: { type: Number, default: 0 },
+            timestamp: { type: Date, default: Date.now }
+        }],
+        default: []
+    },
+
     lastActivity: {
         type: Date,
         default: Date.now

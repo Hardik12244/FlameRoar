@@ -46,6 +46,10 @@ const mockUser = {
     titles: ['Rookie Coder'],
     mastery: new Map(),
     learnedTopics: [],
+    activityHistory: [
+        { type: 'challenge', topic: 'Arrays & Strings', isCorrect: true, xpGained: 25, timestamp: new Date(Date.now() - 3600000) },
+        { type: 'lesson', topic: 'Two Pointers', isCorrect: true, xpGained: 15, timestamp: new Date(Date.now() - 7200000) }
+    ],
     inventory: [],
     skillTree: new Map(),
     save: function() { 

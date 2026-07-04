@@ -46,5 +46,5 @@ module.exports = {
     isMock,
     isAIMock,
     models: getModels(),
-    port: process.env.PORT || 5001
+    port: process.env.PORT || 5055
 };

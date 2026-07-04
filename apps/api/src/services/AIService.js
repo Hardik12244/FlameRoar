@@ -829,44 +829,6 @@ const generateHintForQuestion = async (questionText, topic, difficulty = 1, hint
     return generateHint(questionText, hintLevel);
 };
 
-// ──────────────────────────────────────────────
-// Support Chatbot
-// ──────────────────────────────────────────────
-const getSupportResponse = async (message, user = {}) => {
-    const safeMessage = String(message || '').trim();
-    if (!safeMessage) {
-        return 'Tell me what concept is blocking you, and I will guide you step by step.';
-    }
-
-    if (isAIMock) {
-        return `I hear you. For "${safeMessage}", start with one tiny example, trace it by hand, then test one edge case. If you want, I can give a loop/array style hint next.`;
-    }
-
-    try {
-        const userLevel = typeof user.level === 'number' ? user.level : 1;
-        const learnedTopics = Array.isArray(user.learnedTopics) ? user.learnedTopics.slice(-5) : [];
-
-        const prompt = `
-You are Bit, a concise coding mentor inside an RPG learning game.
-User message: "${safeMessage}"
-User context:
-- Level: ${userLevel}
-- Learned topics: ${learnedTopics.join(', ') || 'none yet'}
-
-Rules:
-- Give practical guidance in 3-6 short sentences.
-- Be encouraging, accurate, and beginner-friendly.
-- If the user asks for a direct answer, provide a guided hint first.
-- Prefer JavaScript examples when needed.
-- No markdown code fences.
-`;
-
-        const resultText = await withRetry(() => askAI(prompt));
-        return resultText.trim();
-    } catch (error) {
-        return 'Bit lost signal for a moment. Try reframing your doubt in one line, and I will guide you with a focused hint.';
-    }
-};
 
 // ──────────────────────────────────────────────
 // Lesson Generation
@@ -937,7 +899,6 @@ module.exports = {
     generateQuestion,
     generateHint,
     generateHintForQuestion,
-    getSupportResponse,
     generateLesson,
     simulateAIResponseTime,
     clearQuestionHistory

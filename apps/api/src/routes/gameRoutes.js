@@ -11,7 +11,6 @@ const {
     getNpcInteractionStatus,
     interactWithNpc,
     resolveNpcBattle,
-    chatWithSupport,
     consumeItem,
     getHint
 } = require('../controllers/gameController');
@@ -172,45 +171,6 @@ router.post('/npc/:npcId/resolve', protect, resolveNpcBattle);
  */
 router.get('/boss/:topic', protect, getBossChallenge);
 
-/**
- * @swagger
- * /api/game/support/chat:
- *   post:
- *     summary: Chat with Bit, the System Sprite
- *     tags: [Support]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               message: { type: string }
- *     responses:
- *       200:
- *         description: Bit's response
- */
-router.post('/support/chat', protect, chatWithSupport);
-
-/**
- * @swagger
- * /api/game/lesson/{topic}:
- *   get:
- *     summary: Request a mini-lesson on a topic
- *     tags: [AI Battles]
- *     parameters:
- *       - in: path
- *         name: topic
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Mini lesson object
- */
-router.get('/lesson/:topic', protect, getLesson);
 router.post('/lesson/:lessonId/resolve', protect, resolveLesson);
 
 /**

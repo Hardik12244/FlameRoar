@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5055/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5055/api');
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,10 +9,28 @@ export const api = axios.create({
   },
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    let userMessage = 'Something went wrong. Please try again later.';
+    if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+      userMessage = 'Unable to connect to the server. Please try again.';
+    } else if (error.response?.status === 404) {
+      userMessage = error.response.data?.message || 'The requested resource was not found.';
+    } else if (error.response?.status === 400 || error.response?.status === 403) {
+      userMessage = error.response.data?.message || 'Invalid request or unauthorized access.';
+    } else if (error.response?.data?.message) {
+      userMessage = error.response.data.message;
+    }
+    error.userMessage = userMessage;
+    return Promise.reject(error);
+  }
+);
 
 export const UserService = {
   onboard: (data) => api.post('/user/onboard', data),
   getProfile: () => api.get('/user/profile'),
+  getHistory: () => api.get('/user/history'),
   updateStats: (data) => api.patch('/user/stats', data),
   saveExploredChunk: (chunkKey) => api.patch('/user/explore', { chunkKey }),
   getLeaderboard: (params) => api.get('/user/leaderboard', { params }),
@@ -34,7 +52,6 @@ export const GameService = {
   interactWithNpc: (npcId) => api.post(`/game/npc/${encodeURIComponent(npcId)}/interact`),
   resolveLesson: (lessonId, data) => api.post(`/game/lesson/${encodeURIComponent(lessonId)}/resolve`, data),
   resolveNpcBattle: (npcId, data) => api.post(`/game/npc/${npcId}/resolve`, data),
-  chatWithSupport: (message) => api.post('/game/support/chat', { message }),
   consumeItem: (itemType) => api.post('/game/inventory/consume', { itemType }),
   getHint: (questionText, topic, difficulty, hintLevel) => api.post('/game/hint', {
     questionText,

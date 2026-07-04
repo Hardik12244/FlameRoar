@@ -1,7 +1,7 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const API_BASE = process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 5000}/api`;
+const API_BASE = process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 5055}/api`;
 const SYSTEM_SECRET = process.env.SYSTEM_SECRET;
 
 const auditAxios = axios.create({
@@ -102,6 +102,13 @@ async function runMasterAudit() {
         if (!realBuyRes.data.inventory.some(i => i.itemType === 'Topic Revealer')) {
             throw new Error('Inventory update failed');
         }
+    });
+
+    // --- ANALYTICS GAUNTLET ---
+    console.log('\n--- MODULE: ANALYTICS & HISTORY ---');
+    await auditStep('Fetch Activity History', async () => {
+        const res = await auditAxios.get(`${API_BASE}/user/history`);
+        if (!Array.isArray(res.data.history)) throw new Error('History is not an array');
     });
 
     console.log('\n' + '⚔️ '.repeat(20));

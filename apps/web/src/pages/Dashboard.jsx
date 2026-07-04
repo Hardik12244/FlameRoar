@@ -11,9 +11,9 @@ import {
   Star, 
   Crown, 
   Target,
-  ChevronRight,
   Sparkles,
-  Sword
+  Sword,
+  History
 } from "lucide-react";
 
 const Dashboard = () => {
@@ -35,10 +35,15 @@ const Dashboard = () => {
   const nextLevelXP = level * 100;
   const progress = (xp / nextLevelXP) * 100;
   const timeSpent = `${Math.max(1, Math.floor(xp / 120))}h`;
+  const attempted = Number(user.questionsAttempted || solved || 0);
+  const accuracy = attempted > 0 ? Math.round((solved / attempted) * 100) : 100;
+  const recentActivities = Array.isArray(user.activityHistory) ? user.activityHistory.slice(0, 3) : [];
+
   const quickActions = [
     { label: 'Marketplace', icon: Coins, color: 'text-map-brown', bg: 'bg-white', border: 'border-white', route: '/explore' },
     { label: 'Guilds', icon: Trophy, color: 'text-map-brown', bg: 'bg-white', border: 'border-white', route: '/guilds' },
     { label: 'Skill Tree', icon: Star, color: 'text-map-brown', bg: 'bg-white', border: 'border-white', route: '/skill-tree' },
+    { label: 'History', icon: History, color: 'text-map-brown', bg: 'bg-white', border: 'border-white', route: '/history' },
   ];
 
   return (
@@ -114,26 +119,36 @@ const Dashboard = () => {
               </div>
 
               {/* STAT GRID */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white/50 border border-map-brown/5 p-3 rounded-2xl flex flex-col items-center gap-1 group/stat hover:bg-white transition-colors shadow-sm">
+              <div className="grid grid-cols-3 gap-2.5">
+                <div className="bg-white/50 border border-map-brown/5 p-2.5 rounded-2xl flex flex-col items-center gap-1 group/stat hover:bg-white transition-colors shadow-sm">
                   <Zap className="w-4 h-4 text-yellow-600 group-hover/stat:scale-125 transition-transform" />
-                  <span className="text-[10px] text-map-ink-muted uppercase font-black">Focus</span>
-                  <span className="text-sm font-black text-map-ink">{focus}%</span>
+                  <span className="text-[9px] text-map-ink-muted uppercase font-black">Focus</span>
+                  <span className="text-xs font-black text-map-ink">{focus}%</span>
                 </div>
-                <div className="bg-white/50 border border-map-brown/5 p-3 rounded-2xl flex flex-col items-center gap-1 group/stat hover:bg-white transition-colors shadow-sm">
+                <div className="bg-white/50 border border-map-brown/5 p-2.5 rounded-2xl flex flex-col items-center gap-1 group/stat hover:bg-white transition-colors shadow-sm">
                   <Flame className="w-4 h-4 text-orange-500 group-hover/stat:scale-125 transition-transform" />
-                  <span className="text-[10px] text-map-ink-muted uppercase font-black">Streak</span>
-                  <span className="text-sm font-black text-map-ink">{streak}d</span>
+                  <span className="text-[9px] text-map-ink-muted uppercase font-black">Streak</span>
+                  <span className="text-xs font-black text-map-ink">{streak}d</span>
                 </div>
-                <div className="bg-white/50 border border-map-brown/5 p-3 rounded-2xl flex flex-col items-center gap-1 group/stat hover:bg-white transition-colors shadow-sm">
+                <div className="bg-white/50 border border-map-brown/5 p-2.5 rounded-2xl flex flex-col items-center gap-1 group/stat hover:bg-white transition-colors shadow-sm">
                   <Target className="w-4 h-4 text-emerald-600 group-hover/stat:scale-125 transition-transform" />
-                  <span className="text-[10px] text-map-ink-muted uppercase font-black">Solved</span>
-                  <span className="text-sm font-black text-map-ink">{solved}</span>
+                  <span className="text-[9px] text-map-ink-muted uppercase font-black">Solved</span>
+                  <span className="text-xs font-black text-map-ink">{solved}</span>
                 </div>
-                <div className="bg-white/50 border border-map-brown/5 p-3 rounded-2xl flex flex-col items-center gap-1 group/stat hover:bg-white transition-colors shadow-sm">
+                <div className="bg-white/50 border border-map-brown/5 p-2.5 rounded-2xl flex flex-col items-center gap-1 group/stat hover:bg-white transition-colors shadow-sm">
+                  <Shield className="w-4 h-4 text-blue-600 group-hover/stat:scale-125 transition-transform" />
+                  <span className="text-[9px] text-map-ink-muted uppercase font-black">Accuracy</span>
+                  <span className="text-xs font-black text-map-ink">{accuracy}%</span>
+                </div>
+                <div className="bg-white/50 border border-map-brown/5 p-2.5 rounded-2xl flex flex-col items-center gap-1 group/stat hover:bg-white transition-colors shadow-sm">
                   <Trophy className="w-4 h-4 text-map-brown group-hover/stat:scale-125 transition-transform" />
-                  <span className="text-[10px] text-map-ink-muted uppercase font-black">Rank</span>
-                  <span className="text-sm font-black text-map-ink">#124</span>
+                  <span className="text-[9px] text-map-ink-muted uppercase font-black">Rank</span>
+                  <span className="text-xs font-black text-map-ink">#124</span>
+                </div>
+                <div className="bg-white/50 border border-map-brown/5 p-2.5 rounded-2xl flex flex-col items-center gap-1 group/stat hover:bg-white transition-colors shadow-sm">
+                  <Coins className="w-4 h-4 text-amber-500 group-hover/stat:scale-125 transition-transform" />
+                  <span className="text-[9px] text-map-ink-muted uppercase font-black">Coins</span>
+                  <span className="text-xs font-black text-map-ink">{coins}</span>
                 </div>
               </div>
 
@@ -199,7 +214,7 @@ const Dashboard = () => {
             </motion.div>
 
             {/* QUICK ACTIONS GRID */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {quickActions.map((item, i) => (
                 <motion.button
                   key={item.label}
@@ -208,14 +223,49 @@ const Dashboard = () => {
                   transition={{ delay: i * 0.1 }}
                   whileHover={{ y: -5, backgroundColor: 'rgba(255,255,255,0.9)' }}
                   onClick={() => navigate(item.route)}
-                  className={`p-6 rounded-3xl bg-white/60 border ${item.border} flex flex-col items-center gap-4 transition-all shadow-(--shadow-map-soft)`}
+                  className={`p-5 rounded-3xl bg-white/60 border ${item.border} flex flex-col items-center gap-3 transition-all shadow-(--shadow-map-soft)`}
                 >
-                  <div className={`p-4 rounded-2xl ${item.bg} shadow-inner`}>
-                    <item.icon className={`w-6 h-6 ${item.color}`} />
+                  <div className={`p-3.5 rounded-2xl ${item.bg} shadow-inner`}>
+                    <item.icon className={`w-5 h-5 ${item.color}`} />
                   </div>
-                  <span className="text-xs font-black uppercase tracking-widest text-map-ink">{item.label}</span>
+                  <span className="text-[11px] font-black uppercase tracking-widest text-map-ink text-center">{item.label}</span>
                 </motion.button>
               ))}
+            </div>
+
+            {/* RECENT ACTIVITY & ANALYTICS PREVIEW */}
+            <div className="bg-white/80 backdrop-blur-md border border-white rounded-[2.5rem] p-6 shadow-(--shadow-map-soft)">
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-2">
+                  <History className="w-5 h-5 text-map-brown" />
+                  <h4 className="font-black text-sm uppercase tracking-wider text-map-ink">Recent Learning Activity</h4>
+                </div>
+                <button 
+                  onClick={() => navigate('/history')}
+                  className="text-xs font-bold text-map-brown hover:underline"
+                >
+                  View All History →
+                </button>
+              </div>
+              
+              {recentActivities.length === 0 ? (
+                <p className="text-xs text-map-ink-muted italic py-4 text-center bg-white/50 rounded-2xl border border-dashed border-map-brown/10">
+                  No recent activities recorded. Jump into the game world to start solving coding challenges!
+                </p>
+              ) : (
+                <div className="space-y-2.5">
+                  {recentActivities.map((act, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-3 rounded-2xl bg-white/60 border border-map-brown/5 text-xs">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                        <span className="font-bold text-map-ink capitalize">{act.topic || 'Coding Challenge'}</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-map-brown/10 text-map-brown font-bold uppercase">{act.type}</span>
+                      </div>
+                      <span className="font-mono font-bold text-emerald-600">+{act.xpGained || 0} XP</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* FOOTER STATS */}

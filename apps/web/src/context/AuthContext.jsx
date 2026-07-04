@@ -12,13 +12,14 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // Database User
   const [loading, setLoading] = useState(true);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
+  const [isDemoMode, setIsDemoMode] = useState(() => localStorage.getItem('flameroar_demo_mode') === 'true');
 
   useEffect(() => {
     let mounted = true;
     const fetchProfile = async () => {
-      if (!isLoaded) return;
+      if (!isLoaded && !isDemoMode) return;
       
-      if (!isSignedIn) {
+      if (!isSignedIn && !isDemoMode) {
         if (mounted) {
            setUser(null);
            setNeedsOnboarding(false);
@@ -34,7 +35,29 @@ export const AuthProvider = ({ children }) => {
           setNeedsOnboarding(false);
         }
       } catch (err) {
-        if (err.response?.status === 404 || err.response?.data?.message === 'Hero not found') {
+        if (isDemoMode) {
+          if (mounted) {
+            const fallbackDemoUser = {
+              username: "DemoHero",
+              class: "Array Knight",
+              level: 5,
+              xp: 450,
+              coins: 200,
+              streak: 3,
+              focusEnergy: 100,
+              currentRegion: "Academy",
+              unlockedRegions: { academy: true, outlawTrail: true },
+              activityHistory: [
+                { type: 'challenge', topic: 'Arrays & Strings', isCorrect: true, xpGained: 25, timestamp: new Date() }
+              ],
+              questionsSolved: 12,
+              questionsAttempted: 15,
+              learnedTopics: ['Arrays', 'Loops', 'Variables']
+            };
+            setUser(fallbackDemoUser);
+            setNeedsOnboarding(false);
+          }
+        } else if (err.response?.status === 404 || err.response?.data?.message === 'Hero not found') {
           // Exists in Clerk, missing from DB. Must onboard!
           if (mounted) {
             setNeedsOnboarding(true);
@@ -50,7 +73,7 @@ export const AuthProvider = ({ children }) => {
     
     fetchProfile();
     return () => { mounted = false; };
-  }, [isSignedIn, isLoaded]);
+  }, [isSignedIn, isLoaded, isDemoMode]);
 
   const onboard = async (username, selectedClass) => {
       try {
@@ -68,15 +91,25 @@ export const AuthProvider = ({ children }) => {
       }
   };
 
+  const loginAsDemo = () => {
+    localStorage.setItem('flameroar_demo_mode', 'true');
+    setIsDemoMode(true);
+    setLoading(true);
+  };
+
   const logout = () => {
+    localStorage.removeItem('flameroar_demo_mode');
+    setIsDemoMode(false);
     signOut();
     setUser(null);
   };
 
   const value = {
     user,
-    loading: loading || !isLoaded,
+    loading: loading || (!isLoaded && !isDemoMode),
     needsOnboarding,
+    isDemoMode,
+    loginAsDemo,
     onboard,
     logout,
     setUser

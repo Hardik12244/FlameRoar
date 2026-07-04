@@ -1,7 +1,7 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const API_BASE = process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 5000}/api`;
+const API_BASE = process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 5055}/api`;
 
 async function runLiveVerification() {
     console.log('\n⚔️  INITIATING FULL BACKEND LIVE VERIFICATION...\n');
@@ -36,12 +36,13 @@ async function runLiveVerification() {
         console.log(`✅ Success: Fetched ${itemNames.length} items from Bazaar.`);
         console.log(`   Sample Item: ${itemNames[0]} (${shop.data[itemNames[0]].price} Credits)`);
 
-        // 5. SUPPORT MODULE: Bit (System Sprite)
-        console.log('\n[5/5] MODULE: SUPPORT (AI Conversational)');
-        const chat = await axios.post(`${API_BASE}/game/support/chat`, {
-            message: "What is an array?"
-        });
-        console.log(`✅ Success: Bit responded: "${chat.data.response.substring(0, 50)}..."`);
+        // 5. ANALYTICS MODULE: Activity History (Tests Tracking)
+        console.log('\n[5/5] MODULE: ANALYTICS (Activity History)');
+        const history = await axios.get(`${API_BASE}/user/history`);
+        console.log(`✅ Success: Fetched ${history.data.history.length} activity records.`);
+        if (history.data.history.length > 0) {
+            console.log(`   Latest Activity: ${history.data.history[0].type} (${history.data.history[0].topic || 'General'})`);
+        }
 
         console.log('\n🛡️  FULL SYSTEM LOGIC VALIDATED: ALL MODULES OPERATIONAL\n');
     } catch (err) {

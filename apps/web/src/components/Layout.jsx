@@ -16,7 +16,6 @@ import {
   DistrictMenu,
   SearchOverlay,
   NotificationToast,
-  FloatingAssistant,
 } from "./world";
 
 import { useWorldUI } from "../context/WorldUIContext";
@@ -51,7 +50,15 @@ export const Layout = ({ children }) => {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isFullscreenGame, navigate]);
 
-  const sidebarWidth = collapsed ? 72 : 180;
+  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const sidebarWidth = isMobile ? 0 : (collapsed ? 72 : 180);
 
   return (
     <MapWorldBackground>
@@ -65,9 +72,6 @@ export const Layout = ({ children }) => {
 
       {!hideChrome && <SearchOverlay />}
       {!hideChrome && <NotificationToast />}
-      {!isGameRoute && !hideChrome && !isDashboardRoute && (
-        <FloatingAssistant />
-      )}
 
       {/* 🔥 TOP NAVBAR (FIXED PROPERLY) */}
       {!hideChrome && (
@@ -115,7 +119,7 @@ export const Layout = ({ children }) => {
               <div className="order-3 ml-auto flex gap-2 md:order-0">
                 <button
                   onClick={() => navigate("/mentors")}
-                  className="rounded-md border-2 border-[#7d5e33] bg-[#f8ebcf] px-4 py-2 text-xs font-black uppercase text-[#5c6747] shadow-[0_2px_0_#a07b44,0_4px_0_#674925] transition hover:-translate-y-0.5 hover:text-[#32432b]"
+                  className="hidden sm:block rounded-md border-2 border-[#7d5e33] bg-[#f8ebcf] px-4 py-2 text-xs font-black uppercase text-[#5c6747] shadow-[0_2px_0_#a07b44,0_4px_0_#674925] transition hover:-translate-y-0.5 hover:text-[#32432b]"
                 >
                   Mentors
                 </button>
@@ -174,10 +178,10 @@ export const Layout = ({ children }) => {
           isFullscreenGame
             ? "min-h-dvh"
             : isDashboardRoute
-            ? "min-h-dvh px-4 pt-24 md:px-8 md:pt-28"
+            ? "min-h-dvh px-4 pt-24 pb-24 md:px-8 md:pt-28 md:pb-12"
             : isGameRoute
-            ? "min-h-dvh pb-18 pt-17 md:pb-6 md:pt-18"
-            : "mx-auto max-w-7xl pb-18 px-4 pt-26 md:pb-12 md:pt-28"
+            ? "min-h-dvh pb-24 pt-17 md:pb-6 md:pt-18"
+            : "mx-auto max-w-7xl pb-24 px-4 pt-26 md:pb-12 md:pt-28"
         )}
       >
         {isGameRoute ? (
