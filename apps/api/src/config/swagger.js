@@ -10,8 +10,12 @@ const options = {
     },
     servers: [
       {
-        url: process.env.API_URL || 'http://localhost:5055',
-        description: 'API Server',
+        url: process.env.API_URL || 'https://obsidian-2w0j.onrender.com',
+        description: 'Hosted Render API Server',
+      },
+      {
+        url: 'http://localhost:5055',
+        description: 'Local Development Server',
       },
     ],
     components: {
