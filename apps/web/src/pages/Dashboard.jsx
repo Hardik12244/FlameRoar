@@ -13,7 +13,8 @@ import {
   Target,
   Sparkles,
   Sword,
-  History
+  History,
+  ChevronRight
 } from "lucide-react";
 
 const Dashboard = () => {

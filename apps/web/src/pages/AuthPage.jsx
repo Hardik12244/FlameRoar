@@ -69,6 +69,23 @@ const AuthPage = () => {
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="mb-6 w-full max-w-md rounded-2xl border-2 border-amber-500/50 bg-gradient-to-br from-amber-500/15 via-orange-500/10 to-transparent p-5 text-center shadow-lg backdrop-blur-md"
+            >
+              <h3 className="font-bold text-map-brown text-sm md:text-base mb-1">Evaluating for a Role or Internship?</h3>
+              <p className="text-xs text-map-ink-muted mb-3.5">Skip authentication and jump straight into a pre-leveled hero profile with activity logs, unlocked regions, and live challenges.</p>
+              <button
+                type="button"
+                onClick={() => loginAsDemo()}
+                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-sm shadow-md hover:from-amber-600 hover:to-orange-600 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>⚡ Launch Instant Demo (Guest Mode)</span>
+              </button>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: 0.15 }}
               className="relative z-10 w-full max-w-md rounded-2xl border border-white/55 bg-white shadow-(--shadow-map-lift) overflow-hidden"
             >
@@ -116,22 +133,6 @@ const AuthPage = () => {
             >
                 {showSignUp ? "Already a hero? Sign In" : "New here? Sign Up"}
             </motion.button>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="mt-6 pt-6 border-t border-map-brown/15 w-full max-w-md text-center"
-            >
-              <button
-                type="button"
-                onClick={() => loginAsDemo()}
-                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-sm shadow-md hover:from-amber-600 hover:to-orange-600 transition-all flex items-center justify-center gap-2"
-              >
-                <span>⚡ Launch Instant Demo (Guest Mode)</span>
-              </button>
-              <p className="text-[11px] text-map-ink-muted mt-1.5">No login required • Instant access for recruiter evaluation</p>
-            </motion.div>
         </MapWorldBackground>
      );
   }

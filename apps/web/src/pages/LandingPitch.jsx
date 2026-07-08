@@ -3,6 +3,7 @@ import { Flame, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapWorldBackground, MapButton } from "../components/map-ui";
 import PixelHeroSection from "../components/landing/PixelHeroSection";
+import { useAuth } from "../context/AuthContext";
 import {
   SectionWrapper,
   MapPreviewStrip,
@@ -40,6 +41,7 @@ const capabilities = [
 
 export default function LandingPitch() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const { loginAsDemo } = useAuth();
 
   return (
     <MapWorldBackground className="min-h-screen overflow-x-hidden font-sans text-map-ink">
@@ -79,11 +81,18 @@ export default function LandingPitch() {
               initial={{ opacity: 0, x: 24 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
-              className="hidden md:inline-block"
+              className="hidden md:flex items-center gap-2.5"
             >
               <MapButton to="/auth" className="px-5 py-2 text-xs">
                 Start the Game
               </MapButton>
+              <button
+                type="button"
+                onClick={() => loginAsDemo()}
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-xs shadow-md hover:from-amber-600 hover:to-orange-600 transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>⚡ Instant Demo (No Login)</span>
+              </button>
             </motion.div>
 
             {/* Mobile menu button */}
@@ -123,10 +132,17 @@ export default function LandingPitch() {
                     {item.label}
                   </a>
                 ))}
-                <div className="mt-2 pt-2 border-t border-white/10">
+                <div className="mt-2 pt-2 border-t border-white/10 flex flex-col gap-2">
                   <MapButton to="/auth" className="w-full px-5 py-2.5 text-xs text-center">
                     Start the Game
                   </MapButton>
+                  <button
+                    type="button"
+                    onClick={() => { setMobileMenuOpen(false); loginAsDemo(); }}
+                    className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-xs shadow-md hover:from-amber-600 hover:to-orange-600 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <span>⚡ Instant Demo (No Login)</span>
+                  </button>
                 </div>
               </div>
             </motion.nav>

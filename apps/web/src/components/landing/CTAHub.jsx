@@ -2,8 +2,11 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 export function CTAHub() {
+  const { loginAsDemo } = useAuth();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -56,6 +59,15 @@ export function CTAHub() {
             >
               ▶ START QUEST
             </Link>
+          </motion.div>
+          <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}>
+            <button
+              type="button"
+              onClick={() => loginAsDemo()}
+              className="inline-flex items-center justify-center rounded-md border-2 border-[#b56d19] bg-gradient-to-r from-amber-500 to-orange-500 px-8 py-3 font-pixel text-[0.66rem] uppercase tracking-[0.12em] text-white shadow-[inset_0_1px_0_rgba(255,236,164,0.5),0_3px_0_#8c5111,0_6px_0_#613709,0_10px_0_rgba(24,38,9,0.24)] transition-all duration-150 hover:brightness-105 cursor-pointer"
+            >
+              ⚡ INSTANT DEMO (NO LOGIN)
+            </button>
           </motion.div>
         </div>
       </div>

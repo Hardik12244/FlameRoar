@@ -12,7 +12,11 @@ const connectDB = async () => {
     } catch (error) {
         console.error(`\x1b[31m✘ MongoDB Connection Failed: ${error.message}\x1b[0m`);
         console.log(`\x1b[33m💡 Tip: Set MOCK_MODE=true in .env to run without a database.\x1b[0m`);
-        process.exit(1);
+        if (process.env.NODE_ENV === 'production') {
+            process.exit(1);
+        } else {
+            console.log(`\x1b[33m✔ Falling back to MOCK MODE so server stays online without MongoDB!\x1b[0m`);
+        }
     }
 };
 
